@@ -27,12 +27,12 @@
   },
   "routes": [
     {
-      "pattern": "a1rcarg0.etzhayyim.com/*",
-      "zone_name": "etzhayyim.com"
+      "pattern": "a1rcarg0.itonami.app/*",
+      "zone_name": "itonami.app"
     },
     {
-      "pattern": "air-cargo.etzhayyim.com/*",
-      "zone_name": "etzhayyim.com"
+      "pattern": "air-cargo.itonami.app/*",
+      "zone_name": "itonami.app"
     }
   ]
 }

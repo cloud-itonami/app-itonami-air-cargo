@@ -1,6 +1,6 @@
 {
   "@context": "https://etzhayyim.com/ns/kotodama/v1",
-  "@id": "did:web:air-cargo.etzhayyim.com",
+  "@id": "did:web:air-cargo.itonami.app",
   "name": "air-cargo",
   "nanoid": "a1rcarg0",
   "project": "air-cargo",

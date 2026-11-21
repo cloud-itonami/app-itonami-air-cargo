@@ -38,7 +38,7 @@ export const AWB_PARTIES_INNER_TYPE = "com.etzhayyim.apps.airCargo.awbParties";
 export const CARGO_CLAIM_INNER_TYPE = "com.etzhayyim.apps.airCargo.cargoClaim";
 export const SECURITY_SCREENING_INNER_TYPE = "com.etzhayyim.apps.airCargo.securityScreening";
 
-export const AIR_CARGO_DID_PREFIX = "did:web:air-cargo.etzhayyim.com:" as const;
+export const AIR_CARGO_DID_PREFIX = "did:web:air-cargo.itonami.app:" as const;
 
 // ─── Shipment anchor (PLAINTEXT, public operational metadata) ────────
 

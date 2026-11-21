@@ -22,12 +22,12 @@
 
 (def claims
   {:tracked-files 28
-   :inherited-bytes 3970           ; the 4 inherited files still carried unchanged
+   :inherited-bytes 3968           ; the 4 inherited files still carried unchanged
    :appview-ts-files 0             ; TypeScript OUTSIDE kotoba/ -- see kept below
    :appview-svelte-files 0
    :production-canonical-files 3
    :kept-files 7                   ; kotoba/, kept deliberately and pinned
-   :kept-bytes 32149
+   :kept-bytes 32145
    :declared-vars 8
    :declared-routes 2
    :declared-capabilities 3
@@ -48,12 +48,14 @@
 ;; It is pinned here BY HASH, not merely counted, so it can neither grow silently
 ;; (new TypeScript smuggled in under a directory the appview claims not to own)
 ;; nor rot silently (edited without anyone deciding to).
+;; JUN-1410 (2026-11-21): kotoba/src/types.ts, kotoba/test/air-cargo.test.ts, kotodama.jsonld diverged from upstream ON PURPOSE -- the did:web host
+;; moved to itonami.app. The pins below are the new content; see migration.edn.
 (def kept
   {"kotoba/package.json" "87c4de8ac42a77996c6575fef8afe61ad400071019c36b0915c3b04105dbf7de"
    "kotoba/src/index.ts" "027d8f5cf3b8f9b8981dc38932896661d67b4561881f639e87d9ecd40bb35369"
    "kotoba/src/registry.ts" "5ffea832eefd8a9db55bc4a001956ae8bc973a1e2260a7095e45325c708bafc4"
-   "kotoba/src/types.ts" "c7fc237f3a4a4edd5997b1ec6c09b3d7124eb5239f6cccef41b73fd6f6f0981c"
-   "kotoba/test/air-cargo.test.ts" "890d5d6bf89d9ef043e2eb3060f16ee16eb2af4eb25fdf8415b1a259ffd52862"
+   "kotoba/src/types.ts" "5bd4f46ff7f8d5556a0a331b55b1e041583a40fc82725c39771b437f84ba0707"
+   "kotoba/test/air-cargo.test.ts" "5ac459eb3bd62c0fe9c14dc27deedb3a34b018e4c688d56dadcbde7d6b80d824"
    "kotoba/tsconfig.json" "95a429e51d6162cb7205b603f745e7604d93ffbb1ea6c346e5c6215a79ae541e"
    "kotoba/vitest.config.ts" "f82a551ef4da1c9cbf17985a3bee96eee450a3e4a46bff0d96c6150263121eff"})
 
@@ -65,7 +67,7 @@
   {"MIGRATION-TODO.md" "f86c8b079497fbf3dd696e15671415807eb28e1f7f509d5b0ac2a6dd326a75f7"
    "NOTICE" "9d3bd5678f857c647a465987cd8538580215416648991fd9de47e6dc648544f0"
    "README.edn" "347110ef5bcb9480ab7168a44ef3c7f69842274b06c4bf782f28ca3f047a0eab"
-   "kotodama.jsonld" "4605d9334374c81e7f6a682952c24753ac65b02e9540075695914a51d0586f95"})
+   "kotodama.jsonld" "603d251073027100156794f35dae57336593a2604b224fb601c5d2a81bce22ce"})
 
 (def undetermined (atom []))
 (def failures (atom []))

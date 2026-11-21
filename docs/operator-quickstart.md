@@ -49,10 +49,10 @@ npx --yes kbb --backend sci scripts/verify-docs-claims.cljk .        # <dir> は
 ```
 SCANNED	25
 PASS	tracked-files	expected=27	actual=27
-PASS	inherited-bytes	expected=3970	actual=3970
+PASS	inherited-bytes	expected=3968	actual=3968
 ...
 PASS	kept-files	expected=7	actual=7
-PASS	kept-bytes	expected=32149	actual=32149
+PASS	kept-bytes	expected=32145	actual=32145
 PASS	kept-files-unchanged	expected=[]	actual=[]
 PASS	appview-ts-files	expected=0	actual=0
 PASS	appview-svelte-files	expected=0	actual=0
@@ -84,9 +84,12 @@ git -C "$UP" rev-parse --is-shallow-repository        # → false（shallow だ�
 git -C "$UP" ls-tree -r --name-only "$REV:$P" | wc -l # → 20   (:source :tracked-files と一致)
 ```
 
-移行後も残る upstream ファイルは 11 個 —— byte 同一の 3 つ（`kotodama.jsonld` /
+移行後も残る upstream ファイルは 11 個 —— 検証器が内容を固定している 3 つ（`kotodama.jsonld` /
 `MIGRATION-TODO.md` / `NOTICE`）、意図的に変更した `wrangler.jsonc`、そして
-**appview ではないので撤去しなかった `kotoba/` の 7 つ**（§6）。撤去した 9 は
+**appview ではないので撤去しなかった `kotoba/` の 7 つ**（§6）。
+このうち `kotodama.jsonld` と、`kotoba/` の `src/types.ts`・`test/air-cargo.test.ts` は、
+2026-11-21 に `did:web` のドメインを `itonami.app` へ移したので upstream の byte とは
+一致しない（JUN-1410。意図した分岐で、固定値は新しい内容を指す）。撤去した 9 は
 `:identity :removed-by-migration` に名前で載っており、検証器が
 **「その 9 が tree に無いこと」** を claim として持っている。復元は:
 
@@ -416,7 +419,7 @@ $ curl -s -o /dev/null -w '%{http_code} %{content_type}\n' http://127.0.0.1:8799
 200 text/html; charset=utf-8
 
 $ curl -s http://127.0.0.1:8799/health
-{"ok":true,"app":"air-cargo","runtime":"cljs","actor":"did:web:air-cargo.etzhayyim.com",
+{"ok":true,"app":"air-cargo","runtime":"cljs","actor":"did:web:air-cargo.itonami.app",
  "nanoid":"a1rcarg0","routes":["/","/health","/xrpc/:nsid"],
  "methods":["com.etzhayyim.apps.airCargo.createCargoBooking",
             "com.etzhayyim.apps.airCargo.issueAirWaybill",
@@ -550,7 +553,7 @@ cd "$REPO" && npx wrangler deploy
 ```
 
 **この walk では実行していない**（§7）。route が指すホストは解決しない
-（`air-cargo.etzhayyim.com` / `a1rcarg0.etzhayyim.com` とも NXDOMAIN）ので、
+（`air-cargo.itonami.app` / `a1rcarg0.itonami.app` とも名前は引けるが 522 を返す）ので、
 deploy が成功しても誰も到達できない。`/xrpc/` の中継先 `mcp.etzhayyim.com` も
 同様なので、到達できたとしても中継は **502 を返す**（成功と同じ形で隠さない）。
 
@@ -561,7 +564,7 @@ superproject の deploy guard は `origin/main` を含む checkout からの dep
 
 ```bash
 for r in 1.1.1.1 8.8.8.8 9.9.9.9; do
-  for h in air-cargo.etzhayyim.com a1rcarg0.etzhayyim.com \
+  for h in air-cargo.itonami.app a1rcarg0.itonami.app \
            dispatcher.etzhayyim.com mcp.etzhayyim.com; do
     s=$(dig @$r +noall +comments "$h" A | grep -o 'status: [A-Z]*' | head -1)
     printf '%-10s %-32s %s\n' "$r" "$h" "$s"
@@ -569,7 +572,7 @@ for r in 1.1.1.1 8.8.8.8 9.9.9.9; do
 done
 ```
 
-12 とも `status: NXDOMAIN`（2026-08-18 実測）。zone 自体は健全であることも見る:
+中継先の 2 ホストは 3 リゾルバとも `status: NXDOMAIN`、route の 2 ホストは `status: NOERROR`（2026-11-21 実測。route を `itonami.app` へ移す前の 2026-08-18 は 12 とも NXDOMAIN）。zone 自体は健全であることも見る:
 
 ```bash
 dig +short etzhayyim.com NS      # → everton/vivienne.ns.cloudflare.com
@@ -585,7 +588,7 @@ dig +short etzhayyim.com A       # → 172.67.179.128, 104.21.51.111
 - **`wrangler deploy`。** route が指すホストが zone に存在せず、それを作るのは
   「このアプリが存在すべきか」という owner の決定である（README の末尾）。
   移行はその決定を先取りしない。
-- **live な request。** 4 ホストとも NXDOMAIN なので、deploy された実体が無く、
+- **live な request。** route の 2 ホストは 522 を返し、中継先の 2 ホストは NXDOMAIN なので、deploy された実体が無く、
   「動くはず」と「動かないはず」を観測で区別する手段が無い。
 - **`kotoba/` の 3 つの mutation。** 前版の §4 が walk して記録している（FK
   チェックの除去 / `isDecimalString` を素通しに / `isUint` に負数を許す）。
