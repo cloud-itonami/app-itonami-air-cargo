@@ -51,4 +51,9 @@
                                  "kotoba/test/air-cargo.test.ts" "kotoba/tsconfig.json"
                                  "kotoba/vitest.config.ts"]
                          :files 7
-                         :bytes 32149}}}
+                         :bytes 32145}}}
+
+;; JUN-1410 (2026-11-21): intentional divergence from upstream.
+;; The did:web host moved from the old domain to itonami.app together with the wrangler
+;; routes. Files changed against their upstream bytes: kotoba/src/types.ts, kotoba/test/air-cargo.test.ts, kotodama.jsonld.
+;; scripts/verify-docs-claims pins the new hashes and byte totals.

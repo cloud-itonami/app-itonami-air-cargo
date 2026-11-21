@@ -132,14 +132,17 @@ appview の TS が戻れば落ちる —— 撤去した 9 パスに戻る場合
 
 | ホスト | 役割 | DNS |
 |---|---|---|
-| `air-cargo.etzhayyim.com` | 公開ホスト（wrangler の route） | **NXDOMAIN** |
-| `a1rcarg0.etzhayyim.com` | 同（nanoid 側） | **NXDOMAIN** |
+| `air-cargo.itonami.app` | 公開ホスト（wrangler の route） | 解決する。応答は **522**（2026-11-21 実測） |
+| `a1rcarg0.itonami.app` | 同（nanoid 側） | 解決する。応答は **522**（2026-11-21 実測） |
 | `mcp.etzhayyim.com` | `/xrpc/:nsid` の中継先 | **NXDOMAIN** |
 | `dispatcher.etzhayyim.com` | 撤去した `src/app.ts` の中継先 | **NXDOMAIN** |
 
-zone 自体は健全（`etzhayyim.com` は Cloudflare NS で apex が 200）なので、
-これは 4 つの label が無いのであってドメインが死んでいるのではない。
-`did:web:air-cargo.etzhayyim.com` も同じ理由で解決しない。
+route の 2 ホストは 2026-11-21 に `etzhayyim.com` から `itonami.app` へ移した
+（JUN-1410。移す前は 2 つとも NXDOMAIN だった）。`itonami.app` はワイルドカードの
+A レコードで名前は引けるが、Worker が bind されていないので 522 を返す。
+中継先の 2 ホストは `etzhayyim.com` に label が無い（zone 自体は健全で、
+Cloudflare NS、apex は 200）。
+`did:web:air-cargo.itonami.app` は `/.well-known/did.json` が 522 なので解決しない。
 
 deploy 先も中継先も、いま存在しない。`/xrpc/` は到達できなければ **502 を返す**
 ——成功と同じ形で隠さない。**移行はこれを直さない。**
@@ -216,9 +219,22 @@ exit 0 = 全一致 / 1 = 食い違い / **2 = 判定できなかった**（0 と
 （沈黙を緑として数えないため）。テスト・ビルド・smoke は
 `docs/operator-quickstart.md`。
 
+## upstream からの分岐（2026-11-21、JUN-1410）
+
+ドメインを `itonami.app` に統一する決定に合わせて、wrangler の route と
+`did:web` の識別子を `etzhayyim.com` から `itonami.app` へ移した。
+この app は未 deploy で、旧い識別子が解決したことは一度も無い。
+
+- 変えたもの: `wrangler.jsonc` の route と `zone_name`、`kotodama.jsonld` の `@id`、
+  `kotoba/src/types.ts` と `kotoba/test/air-cargo.test.ts` の DID、`src/` と `scripts/` の同じ文字列
+- upstream（etzhayyim の monorepo）の byte と一致しなくなったもの: `kotodama.jsonld`、
+  `kotoba/src/types.ts`、`kotoba/test/air-cargo.test.ts`。検証器の固定値と byte 数は新しい内容に合わせた
+- 変えていないもの: 中継先の `mcp.etzhayyim.com` と `dispatcher.etzhayyim.com`、
+  lexicon の名前空間 `com.etzhayyim.*`、`docs/adr/`（当時の記録）
+
 ## 残っている欠陥（移行では直っていない）
 
-1. **4 ホストとも NXDOMAIN。** deploy するか retire するかは owner の決定。
+1. **route の 2 ホストは応答しない（522）、中継先の 2 ホストは NXDOMAIN。** deploy するか retire するかは owner の決定。
 2. **宣言された 3 capability のうち 2 つ（`createCargoBooking` / `acceptCargo`）は
    実装がこの repo のどこにも無い**。残る `issueAirWaybill` は `kotoba/` に在るが、
    appview からは到達しない（上記）。

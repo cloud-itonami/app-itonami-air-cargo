@@ -75,7 +75,7 @@
               "SENTINEL_KEY_7b1e" "unused"})
 
 (defn- call [h method path]
-  (let [req (js/Request. (str "https://air-cargo.etzhayyim.com" path) #js {:method method})]
+  (let [req (js/Request. (str "https://air-cargo.itonami.app" path) #js {:method method})]
     (-> (js/Promise.resolve ((.-fetch h) req env #js {}))
         (.then (fn [res] (-> (.text res)
                              (.then (fn [body] {:status (.-status res)
@@ -145,7 +145,7 @@
                 (check! "health names its methods" true
                         (str/includes? (:body health) "com.etzhayyim.apps.airCargo.issueAirWaybill"))
                 (check! "health names the actor" true
-                        (str/includes? (:body health) "did:web:air-cargo.etzhayyim.com"))
+                        (str/includes? (:body health) "did:web:air-cargo.itonami.app"))
                 (check! "health does not leak var values" false
                         (str/includes? (:body health) hidden-sentinel))
 
