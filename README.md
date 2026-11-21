@@ -49,7 +49,7 @@ route は rest parameter `[...path]` で受けており、`a/b` をそのまま 
 転送していた。空だけが 400（`Missing XRPC method`、文言も当時のまま）。ここを
 1 セグメントに絞るのは移行ではなく方針変更なので、この commit には入れていない。
 
-## いま在るもの — 28 ファイル
+## いま在るもの — 29 ファイル
 
 | 面 | ファイル |
 |---|---|
@@ -61,7 +61,7 @@ route は rest parameter `[...path]` で受けており、`a/b` をそのまま 
 | 検証 | `scripts/{smoke-worker.cljs, verify-docs-claims.cljs}` |
 | 静的版の描画 | `scripts/render-static.kotoba` |
 | ドメインライブラリ（appview ではない） | `kotoba/`（7 ファイル・TypeScript。下記） |
-| 由来・権利・識別 | `NOTICE` / `README.edn` / `migration.edn` / `MIGRATION-TODO.md` |
+| 由来・権利・識別 | `NOTICE` / `README.edn` / `migration.edn` / `MIGRATION-TODO.md` / `blueprint.edn` |
 | 文書 | `README.md` / `docs/operator-quickstart.md` / `docs/adr/0001-*.edn` |
 
 **appview の TypeScript は 0 本、正本言語（`.cljs`/`.cljc`）が 3 本。**
