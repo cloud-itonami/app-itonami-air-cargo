@@ -1,7 +1,7 @@
 {:itonami.blueprint/id "air-cargo"
  :itonami.blueprint/name "air-cargo — air cargo operations appview"
- ;; One classification key (itonami-lib blueprint.edn schema): ISIC Rev.4 class 5120,
- ;; chosen from README.md for the registry catalog (JUN-1439). Equivalence to
- ;; ISIC Rev.5 is not checked here; the lib code table decides that.
- :itonami.blueprint/isic-rev4 "5120"
+ ;; One classification key (itonami-lib blueprint.edn schema): ISIC Rev.5 class 5120 (the same code exists in Rev.5),
+ ;; chosen from README.md for the registry catalog (JUN-1439).
+ ;; checked against cloud-itonami/app-itonami-org-un-isic.
+ :itonami.blueprint/isic-rev5 "5120"
  :itonami.blueprint/domain :aviation/air-cargo}
